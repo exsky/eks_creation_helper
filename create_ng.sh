@@ -15,4 +15,4 @@ aws eks create-nodegroup \
     --scaling-config minSize=1,maxSize=3,desiredSize=1 \
     --ami-type AL2_x86_64 \
     --instance-types t3.micro \
-    --remote-access ec2SshKey=$SSH_KEY_PAIR
+    --remote-access ec2SshKey=$SSH_KEY_PAIR,sourceSecurityGroups=$SG_ID
