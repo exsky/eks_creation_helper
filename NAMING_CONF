@@ -1,0 +1,6 @@
+SSH_KEY_PAIR='ENTER-YOUR-SSH-KEY-PAIR_NAME-HERE'
+CLUSTER_ROLE_NAME='my-eks-cluster-role'
+NODE_ROLE_NAME='my-eks-ng-role'
+SG_NAME='my-eks-security-group'
+CLUSTER_NAME='my-eks-cluster'
+NG_NAME='my-micro-ng3'
