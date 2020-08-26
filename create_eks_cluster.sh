@@ -1,5 +1,10 @@
 #!/bin/bash
 
+file=./vpc_parameter.txt
+if [ -f $file ] ; then
+    rm $file
+fi
+
 CLUSTER_ROLE_NAME='<my-eks-cluster-role>'
 NODE_ROLE_NAME='<my-ng-role>'
 SG_NAME='<my-sg>'
