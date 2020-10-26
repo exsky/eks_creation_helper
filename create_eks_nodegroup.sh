@@ -23,7 +23,7 @@ NG_ROLE_ARN=$(aws iam get-role --role-name $NODE_ROLE_NAME | grep "Arn"| awk -F 
 
 function detecting_cluster_status(){
     # Detect current cluster status
-    STATUS=$(aws eks describe-cluster --name my-eks-cluster | grep status | awk -F "\"" '{ print $4}')
+    STATUS=$(aws eks describe-cluster --name $CLUSTER_NAME | grep status | awk -F "\"" '{ print $4}')
     if [ $STATUS = 'ACTIVE' ] ; then
         # echo "The status of EKS cluster is ACTIVE ..."
         echo 0
