@@ -41,7 +41,7 @@ function create_nodegroup(){
         --subnets "$SUBNET_ID_1" "$SUBNET_ID_2" "$SUBNET_ID_3" \
         --scaling-config minSize=1,maxSize=3,desiredSize=1 \
         --ami-type AL2_x86_64 \
-        --instance-types t3.micro \
+        --instance-types t3.small \
         --remote-access ec2SshKey=$SSH_KEY_PAIR,sourceSecurityGroups=$SG_ID
     echo "Creating Node Group ..."
 }
