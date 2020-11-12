@@ -31,21 +31,30 @@ function create_vpc_and_igw(){
 
 function create_subnets(){
     # Create subnet
-    echo "Creating subnets ... (Tokyo)"
-    SUBNET_ID_1=$(aws ec2 create-subnet --vpc-id $VPCID --cidr-block 192.168.2.0/24 --availability-zone-id apne1-az1 | grep "SubnetId" | awk -F "\"" '{ print $4}')
-    SUBNET_ID_2=$(aws ec2 create-subnet --vpc-id $VPCID --cidr-block 192.168.1.0/24 --availability-zone-id apne1-az2 | grep "SubnetId" | awk -F "\"" '{ print $4}')
-    SUBNET_ID_3=$(aws ec2 create-subnet --vpc-id $VPCID --cidr-block 192.168.0.0/24 --availability-zone-id apne1-az4 | grep "SubnetId" | awk -F "\"" '{ print $4}')
+    echo "Creating subnets ... (US East 1)"
+    SUBNET_ID_1=$(aws ec2 create-subnet --vpc-id $VPCID --cidr-block 192.168.5.0/24 --availability-zone-id use1-az1 | grep "SubnetId" | awk -F "\"" '{ print $4}')
+    SUBNET_ID_2=$(aws ec2 create-subnet --vpc-id $VPCID --cidr-block 192.168.4.0/24 --availability-zone-id use1-az2 | grep "SubnetId" | awk -F "\"" '{ print $4}')
+    SUBNET_ID_3=$(aws ec2 create-subnet --vpc-id $VPCID --cidr-block 192.168.3.0/24 --availability-zone-id use1-az3 | grep "SubnetId" | awk -F "\"" '{ print $4}')
+    SUBNET_ID_1=$(aws ec2 create-subnet --vpc-id $VPCID --cidr-block 192.168.2.0/24 --availability-zone-id use1-az4 | grep "SubnetId" | awk -F "\"" '{ print $4}')
+    SUBNET_ID_2=$(aws ec2 create-subnet --vpc-id $VPCID --cidr-block 192.168.1.0/24 --availability-zone-id use1-az5 | grep "SubnetId" | awk -F "\"" '{ print $4}')
+    SUBNET_ID_3=$(aws ec2 create-subnet --vpc-id $VPCID --cidr-block 192.168.0.0/24 --availability-zone-id use1-az6 | grep "SubnetId" | awk -F "\"" '{ print $4}')
 
     echo "SUBNET_ID_1=\"${SUBNET_ID_1}\"" >> vpc_parameter.txt
     echo "SUBNET_ID_2=\"${SUBNET_ID_2}\"" >> vpc_parameter.txt
     echo "SUBNET_ID_3=\"${SUBNET_ID_3}\"" >> vpc_parameter.txt
-    echo "Creating subnets ... (Tokyo) ... Done"
+    echo "SUBNET_ID_4=\"${SUBNET_ID_4}\"" >> vpc_parameter.txt
+    echo "SUBNET_ID_5=\"${SUBNET_ID_5}\"" >> vpc_parameter.txt
+    echo "SUBNET_ID_6=\"${SUBNET_ID_6}\"" >> vpc_parameter.txt
+    echo "Creating subnets ... (US East 1) ... Done"
 
     # Enable auto-assign public IPv4 address
     echo "Allowing auto-assign IP ..."
     aws ec2 modify-subnet-attribute --map-public-ip-on-launch --subnet-id $SUBNET_ID_1 &> /dev/null
     aws ec2 modify-subnet-attribute --map-public-ip-on-launch --subnet-id $SUBNET_ID_2 &> /dev/null
     aws ec2 modify-subnet-attribute --map-public-ip-on-launch --subnet-id $SUBNET_ID_3 &> /dev/null
+    aws ec2 modify-subnet-attribute --map-public-ip-on-launch --subnet-id $SUBNET_ID_4 &> /dev/null
+    aws ec2 modify-subnet-attribute --map-public-ip-on-launch --subnet-id $SUBNET_ID_5 &> /dev/null
+    aws ec2 modify-subnet-attribute --map-public-ip-on-launch --subnet-id $SUBNET_ID_6 &> /dev/null
     echo "Allowing auto-assign IP ... Done"
 
     echo "Creating Security Group ..."
@@ -58,11 +67,13 @@ function create_subnets(){
 }
 
 function create_cluster(){
-    aws eks create-cluster --region ap-northeast-1 \
+    CLUSTER_ROLE_ARN=$(aws iam get-role --role-name $CLUSTER_ROLE_NAME | grep "Arn"| awk -F "\"" '{ print $4}')
+    aws eks create-cluster --region us-east-1 \
+        --zones=us-east-1f \
         --name $CLUSTER_NAME \
         --kubernetes-version 1.17 \
         --role-arn $CLUSTER_ROLE_ARN \
-        --resources-vpc-config subnetIds=$SUBNET_ID_1,$SUBNET_ID_2,$SUBNET_ID_3,securityGroupIds=$SG_ID
+        --resources-vpc-config subnetIds=$SUBNET_ID_1,$SUBNET_ID_2,$SUBNET_ID_3,$SUBNET_ID_4,$SUBNET_ID_5,$SUBNET_ID_6,securityGroupIds=$SG_ID
     echo "Creating EKS Cluster ..."
 }
 
